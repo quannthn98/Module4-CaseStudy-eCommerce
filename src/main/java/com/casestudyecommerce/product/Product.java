@@ -60,4 +60,16 @@ public class Product {
         this.description = description;
         this.category = category;
     }
+
+    public Product(String name, int quantity, double price, double saleOff, String mainImage, List<Image> subImage, Brand brand, String description, Category category) {
+        this.name = name;
+        this.quantity = quantity;
+        this.price = price;
+        this.saleOff = saleOff;
+        this.mainImage = mainImage;
+        this.subImage = subImage;
+        this.brand = brand;
+        this.description = description;
+        this.category = category;
+    }
 }
