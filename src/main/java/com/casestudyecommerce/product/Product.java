@@ -2,6 +2,7 @@ package com.casestudyecommerce.product;
 
 import com.casestudyecommerce.brand.Brand;
 
+import com.casestudyecommerce.category.Category;
 import com.casestudyecommerce.image.Image;
 import lombok.Data;
 
@@ -44,11 +45,14 @@ public class Product {
     @Column(nullable = false)
     private String description;
 
+    @ManyToOne
+    private Category category;
+
     public Product() {
 
     }
 
-    public Product(Long id, String name, int quantity, double price, double saleOff, String mainImage, List<Image> subImage, Brand brand, String description) {
+    public Product(Long id, String name, int quantity, double price, double saleOff, String mainImage, List<Image> subImage, Brand brand, String description, Category category) {
         this.id = id;
         this.name = name;
         this.quantity = quantity;
@@ -58,5 +62,6 @@ public class Product {
         this.subImage = subImage;
         this.brand = brand;
         this.description = description;
+        this.category = category;
     }
 }
