@@ -7,7 +7,6 @@ import com.casestudyecommerce.image.Image;
 import lombok.Data;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
 @Entity
@@ -17,11 +16,10 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotEmpty
+
     @Column(nullable = false)
     private String name;
 
-    @NotEmpty
     @Column(columnDefinition = "integer default 1")
     private int quantity;
 
@@ -31,7 +29,6 @@ public class Product {
     @Column(columnDefinition = "double default 0")
     private double saleOff;
 
-    @NotEmpty
     @Column(nullable = false)
     private String mainImage;
 
@@ -41,7 +38,6 @@ public class Product {
     @ManyToOne
     private Brand brand;
 
-    @NotEmpty
     @Column(nullable = false)
     private String description;
 
