@@ -31,4 +31,14 @@ public class ProductService implements IProductService {
     public void deleteById(Long id) {
         productRepository.deleteById(id);
     }
+
+    @Override
+    public Page<Product> findAllByNameContaining(String name, Pageable pageable) {
+        return productRepository.findAllByNameContaining(name, pageable);
+    }
+
+    @Override
+    public Page<Product> findAllByBrandContaining(String brand, Pageable pageable) {
+        return productRepository.findAllByBrandContaining(brand, pageable);
+    }
 }
