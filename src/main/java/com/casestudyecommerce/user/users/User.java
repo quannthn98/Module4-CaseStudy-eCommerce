@@ -26,7 +26,7 @@ public class User {
     @Column(nullable = false, columnDefinition = "text")
     private String password;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     private List<Role> roles;
 
     @OneToOne(fetch = FetchType.EAGER)

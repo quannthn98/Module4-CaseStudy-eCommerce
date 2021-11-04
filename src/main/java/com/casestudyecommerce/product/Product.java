@@ -34,7 +34,7 @@ public class Product {
     @Column(nullable = false)
     private String mainImage;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany
     private List<Image> subImage;
 
     @ManyToOne
