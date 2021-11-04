@@ -17,7 +17,6 @@ import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.xml.crypto.Data;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -35,7 +34,7 @@ public class ProductController {
     private IProductService productService;
 
     @Autowired
-    private IImageService iImageService;
+    private IImageService ImageService;
 
     @GetMapping
     public ResponseEntity<Page<Product>> findAll(@RequestParam(name = "q") Optional<String> q, Pageable pageable) {
@@ -69,10 +68,11 @@ public class ProductController {
             String fileNameSubImage = multipartFile.getOriginalFilename();
             FileCopyUtils.copy(multipartFile.getBytes(), new File(fileUpload + new Date().getTime() + fileNameSubImage));
             image.setName(fileNameSubImage);
-            iImageService.save(image);
+            ImageService.save(image);
             imageList.add(image);
         }
-        Product product = new Product(productForm.getName(),
+        Product product = new Product(
+                productForm.getName(),
                 productForm.getQuantity(),
                 productForm.getPrice(),
                 productForm.getSaleOff(),
@@ -85,11 +85,35 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Product> update(@PathVariable Long id, @RequestBody Product product) {
+    public ResponseEntity<Product> update(@PathVariable Long id, ProductForm productForm) throws IOException {
         Optional<Product> productOptional = productService.findById(id);
         if (!productOptional.isPresent()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+        MultipartFile multipartFileMainImage = productForm.getMainImage();
+        String fileNameMainImage = multipartFileMainImage.getOriginalFilename();
+        FileCopyUtils.copy(productForm.getMainImage().getBytes(), new File(fileUpload + fileNameMainImage));
+        List<MultipartFile> multipartFileSubImage = productForm.getSubImage();
+        List<Image> imageList = new ArrayList<>();
+        for (MultipartFile multipartFile : multipartFileSubImage) {
+            Image image = new Image();
+            String fileNameSubImage = multipartFile.getOriginalFilename();
+            FileCopyUtils.copy(multipartFile.getBytes(), new File(fileUpload + new Date().getTime() + fileNameSubImage));
+            image.setName(fileNameSubImage);
+            ImageService.save(image);
+            imageList.add(image);
+        }
+        Product product = new Product(
+                id,
+                productForm.getName(),
+                productForm.getQuantity(),
+                productForm.getPrice(),
+                productForm.getSaleOff(),
+                fileNameMainImage,
+                imageList,
+                productForm.getBrand(),
+                productForm.getDescription(),
+                productForm.getCategory());
         return new ResponseEntity<>(productService.save(product), HttpStatus.OK);
     }
 
