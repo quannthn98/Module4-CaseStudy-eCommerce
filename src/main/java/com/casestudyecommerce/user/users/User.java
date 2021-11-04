@@ -23,14 +23,13 @@ public class User {
     private String username;
 
     @NotEmpty
-    @Size(min = 6, max = 12)
     @Column(nullable = false, columnDefinition = "text")
     private String password;
 
     @ManyToMany
     private List<Role> roles;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER)
     private UserProfile userProfile;
 
     @ManyToOne
@@ -48,4 +47,11 @@ public class User {
         this.userStatus = userStatus;
     }
 
+    public User(String username, String password, List<Role> roles, UserProfile userProfile, UserStatus userStatus) {
+        this.username = username;
+        this.password = password;
+        this.roles = roles;
+        this.userProfile = userProfile;
+        this.userStatus = userStatus;
+    }
 }
