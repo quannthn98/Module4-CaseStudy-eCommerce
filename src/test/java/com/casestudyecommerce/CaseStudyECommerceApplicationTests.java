@@ -1,4 +1,4 @@
-package com.example.casestudyecommerce;
+package com.casestudyecommerce;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

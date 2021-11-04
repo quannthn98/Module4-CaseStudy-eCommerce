@@ -1,4 +1,4 @@
-package com.example.casestudyecommerce;
+package com.casestudyecommerce;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
