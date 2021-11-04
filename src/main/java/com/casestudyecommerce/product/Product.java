@@ -45,7 +45,6 @@ public class Product {
     private String description;
 
     public Product() {
-
     }
 
     public Product(Long id, String name, int quantity, double price, double saleOff, String mainImage, List<Image> subImage, Brand brand, String description) {

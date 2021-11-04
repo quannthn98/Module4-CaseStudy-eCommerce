@@ -35,7 +35,6 @@ public class UserRestController {
     @Autowired
     private IUserProfileService userProfileService;
 
-    @Secured("ROLE_ADMIN")
     @GetMapping
     public ResponseEntity<Page<User>> findAll(Pageable pageable) {
         Page<User> users = userService.findAll(pageable);
@@ -77,7 +76,6 @@ public class UserRestController {
 
     }
 
-    @Secured("ROLE_ADMIN")
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteById(@PathVariable Long id) {
         Optional<User> optionalUser = userService.findById(id);
