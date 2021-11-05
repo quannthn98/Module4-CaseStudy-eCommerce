@@ -1,5 +1,6 @@
 package com.casestudyecommerce.image;
 
+import com.casestudyecommerce.product.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,5 +31,10 @@ public class ImageService implements IImageService {
     @Override
     public void deleteById(Long id) {
         ImageRepository.deleteById(id);
+    }
+
+    @Override
+    public Iterable<Image> findAllByProduct(Product product) {
+        return ImageRepository.findAllByProduct(product);
     }
 }
