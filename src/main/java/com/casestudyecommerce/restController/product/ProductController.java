@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/product")
+@RequestMapping("/products")
 public class ProductController {
     @Value("${file-upload}")
     private String fileUpload;
@@ -37,7 +37,7 @@ public class ProductController {
     private IImageService ImageService;
 
     @GetMapping
-    public ResponseEntity<Page<Product>> findAll(@RequestParam(name = "q") Optional<String> q, Pageable pageable) {
+    public ResponseEntity<Page<Product>> findAll(@RequestParam(name = "q") Optional<String> q,@RequestParam(name = "category") Optional<String> category, Pageable pageable) {
         Page<Product> productPage;
         if (q.isPresent()) {
             productPage = productService.findAllByNameContaining(q.get(), pageable);
