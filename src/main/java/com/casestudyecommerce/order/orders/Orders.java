@@ -9,6 +9,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -23,6 +24,9 @@ public class Orders {
 
     @ManyToOne
     private User seller;
+
+    @NotEmpty
+    private Date dateCreated;
 
     @ManyToOne
     private DeliverFirm deliverFirm;

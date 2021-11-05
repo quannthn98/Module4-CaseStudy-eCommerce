@@ -1,7 +1,10 @@
 package com.casestudyecommerce.restController;
 
+import com.casestudyecommerce.cart.CartDetail;
+import com.casestudyecommerce.cart.ICartService;
 import com.casestudyecommerce.execptionHandler.Exception.DuplicateException;
 import com.casestudyecommerce.role.Role;
+import com.casestudyecommerce.security.model.UserPrinciple;
 import com.casestudyecommerce.user.UserDto;
 import com.casestudyecommerce.user.userProfile.IUserProfileService;
 import com.casestudyecommerce.user.userProfile.UserProfile;
@@ -13,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +28,6 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/user")
 @CrossOrigin("*")
-@Secured({"ROLE_USER","ROLE_SELLER"})
 public class UserRestController {
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -34,6 +37,9 @@ public class UserRestController {
 
     @Autowired
     private IUserProfileService userProfileService;
+
+    @Autowired
+    private ICartService cartService;
 
     @GetMapping
     public ResponseEntity<Page<User>> findAll(Pageable pageable) {
@@ -48,6 +54,17 @@ public class UserRestController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } else {
             return new ResponseEntity<>(optionalUser.get(), HttpStatus.OK);
+        }
+    }
+
+    @GetMapping("/cart")
+    public ResponseEntity<Iterable<CartDetail>> findCartByUser(Authentication authentication){
+        if (authentication == null){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } else {
+            UserPrinciple userPrinciple = (UserPrinciple) authentication.getPrincipal();
+            User user = userService.findByUsername(userPrinciple.getUsername());
+            return new ResponseEntity<>(cartService.findByUser(user), HttpStatus.OK);
         }
     }
 
@@ -87,5 +104,6 @@ public class UserRestController {
             return new ResponseEntity<>("Delete successfully", HttpStatus.OK);
         }
     }
+
 
 }
