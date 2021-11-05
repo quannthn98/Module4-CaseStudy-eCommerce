@@ -47,5 +47,4 @@ public class User {
         this.userProfile = userProfile;
         this.userStatus = userStatus;
     }
-
 }

@@ -13,7 +13,7 @@ public class DeliverFirm {
     private Long id;
 
     @NotEmpty
-    @Column(nullable = false)
+    @Column(columnDefinition = "VARCHAR(50)",unique = true, nullable = false)
     private String name;
 
     public DeliverFirm() {
