@@ -1,5 +1,7 @@
 package com.casestudyecommerce.product;
 
+import com.casestudyecommerce.brand.Brand;
+import com.casestudyecommerce.category.Category;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -38,7 +40,12 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public Page<Product> findAllByBrandContaining(String brand, Pageable pageable) {
-        return productRepository.findAllByBrandContaining(brand, pageable);
+    public Page<Product> findAllByBrand(Brand brand, Pageable pageable) {
+        return productRepository.findAllByBrand(brand, pageable);
+    }
+
+    @Override
+    public Page<Product> findAllByCategory(Category category, Pageable pageable) {
+        return productRepository.findAllByCategory(category, pageable);
     }
 }
