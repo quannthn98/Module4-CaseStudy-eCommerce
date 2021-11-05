@@ -58,19 +58,8 @@ public class ProductController {
 
     @PostMapping
     public ResponseEntity<Product> create(ProductForm productForm) throws IOException {
-        MultipartFile multipartFileMainImage = productForm.getMainImage();
-        String fileNameMainImage = multipartFileMainImage.getOriginalFilename();
-        FileCopyUtils.copy(productForm.getMainImage().getBytes(), new File(fileUpload + fileNameMainImage));
-        List<MultipartFile> multipartFileSubImage = productForm.getSubImage();
-        List<Image> imageList = new ArrayList<>();
-        for (MultipartFile multipartFile : multipartFileSubImage) {
-            Image image = new Image();
-            String fileNameSubImage = multipartFile.getOriginalFilename();
-            FileCopyUtils.copy(multipartFile.getBytes(), new File(fileUpload + new Date().getTime() + fileNameSubImage));
-            image.setName(fileNameSubImage);
-            ImageService.save(image);
-            imageList.add(image);
-        }
+        String fileNameMainImage = getNameMainImage(productForm);
+        List<Image> imageList = getNameSubImage(productForm);
         Product product = new Product(
                 productForm.getName(),
                 productForm.getQuantity(),
@@ -84,15 +73,7 @@ public class ProductController {
         return new ResponseEntity<>(productService.save(product), HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Product> update(@PathVariable Long id, ProductForm productForm) throws IOException {
-        Optional<Product> productOptional = productService.findById(id);
-        if (!productOptional.isPresent()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        MultipartFile multipartFileMainImage = productForm.getMainImage();
-        String fileNameMainImage = multipartFileMainImage.getOriginalFilename();
-        FileCopyUtils.copy(productForm.getMainImage().getBytes(), new File(fileUpload + fileNameMainImage));
+    private List<Image> getNameSubImage(ProductForm productForm) throws IOException {
         List<MultipartFile> multipartFileSubImage = productForm.getSubImage();
         List<Image> imageList = new ArrayList<>();
         for (MultipartFile multipartFile : multipartFileSubImage) {
@@ -103,6 +84,17 @@ public class ProductController {
             ImageService.save(image);
             imageList.add(image);
         }
+        return imageList;
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Product> update(@PathVariable Long id, ProductForm productForm) throws IOException {
+        Optional<Product> productOptional = productService.findById(id);
+        if (!productOptional.isPresent()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        String fileNameMainImage = getNameMainImage(productForm);
+        List<Image> imageList = getNameSubImage(productForm);
         Product product = new Product(
                 id,
                 productForm.getName(),
@@ -115,6 +107,13 @@ public class ProductController {
                 productForm.getDescription(),
                 productForm.getCategory());
         return new ResponseEntity<>(productService.save(product), HttpStatus.OK);
+    }
+
+    private String getNameMainImage(ProductForm productForm) throws IOException {
+        MultipartFile multipartFileMainImage = productForm.getMainImage();
+        String fileNameMainImage = multipartFileMainImage.getOriginalFilename();
+        FileCopyUtils.copy(productForm.getMainImage().getBytes(), new File(fileUpload + fileNameMainImage));
+        return fileNameMainImage;
     }
 
     @DeleteMapping("/{id}")
