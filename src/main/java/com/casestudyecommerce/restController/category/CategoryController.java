@@ -46,6 +46,7 @@ public class CategoryController {
         if (!categoryOptional.isPresent()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+        categoryService.save(category);
         return new ResponseEntity<>(categoryOptional.get(), HttpStatus.OK);
     }
 
