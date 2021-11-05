@@ -34,7 +34,8 @@ public class CartService implements ICartService{
     }
 
     @Override
-    public Iterable<CartDetail> findByUser(User user) {
-        return cartRepository.findByUser(user);
+    public Iterable<CartDetail> findAllByUser(User user) {
+        return cartRepository.findAllByUser(user);
     }
+
 }

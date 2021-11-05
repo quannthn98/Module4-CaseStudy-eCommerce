@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ICartRepository extends JpaRepository<CartDetail, Long> {
-    Iterable<CartDetail> findByUser(User user);
+    Iterable<CartDetail> findAllByUser(User user);
 }

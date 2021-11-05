@@ -25,7 +25,6 @@ public class Orders {
     @ManyToOne
     private User seller;
 
-    @NotEmpty
     private Date dateCreated;
 
     @ManyToOne

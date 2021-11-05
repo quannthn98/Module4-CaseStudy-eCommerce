@@ -20,7 +20,6 @@ public class OrderDetail {
     @ManyToOne
     private Orders orders;
 
-    @NotEmpty
     @Column(nullable = false)
     private double price;
 
