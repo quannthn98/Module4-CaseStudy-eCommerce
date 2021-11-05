@@ -23,13 +23,14 @@ public class User {
     private String username;
 
     @NotEmpty
+    @Size(min = 6, max = 12)
     @Column(nullable = false, columnDefinition = "text")
     private String password;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany
     private List<Role> roles;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne
     private UserProfile userProfile;
 
     @ManyToOne

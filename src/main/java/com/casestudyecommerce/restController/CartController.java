@@ -2,6 +2,7 @@ package com.casestudyecommerce.restController;
 
 import com.casestudyecommerce.cart.CartDetail;
 import com.casestudyecommerce.cart.ICartService;
+import com.casestudyecommerce.product.Product;
 import com.casestudyecommerce.security.model.UserPrinciple;
 import com.casestudyecommerce.user.users.IUserService;
 import com.casestudyecommerce.user.users.User;
@@ -32,7 +33,8 @@ public class CartController {
 
     @PostMapping
     public ResponseEntity<CartDetail> addToCart(@RequestBody CartDetail cartDetail, Authentication authentication) {
-        if (authentication == null) {
+        Product product = cartDetail.getProduct();
+        if (authentication == null || product.getQuantity() <= 0) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         } else {
             UserPrinciple userPrinciple = (UserPrinciple) authentication.getPrincipal();
@@ -49,10 +51,14 @@ public class CartController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } else {
             CartDetail cartDetail = optionalCartDetail.get();
+            Product product = cartDetail.getProduct();
             int quantity = cartDetail.getQuantity();
             switch (action) {
                 case "plus":
                 case "+":
+                    if (cartDetail.getQuantity() <= 0){
+                        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+                    }
                     cartDetail.setQuantity(quantity + 1);
                     break;
                 case "minus":

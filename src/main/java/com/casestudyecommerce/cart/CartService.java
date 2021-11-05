@@ -1,5 +1,6 @@
 package com.casestudyecommerce.cart;
 
+import com.casestudyecommerce.user.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,5 +31,10 @@ public class CartService implements ICartService{
     @Override
     public void deleteById(Long id) {
         cartRepository.deleteById(id);
+    }
+
+    @Override
+    public Iterable<CartDetail> findByUser(User user) {
+        return cartRepository.findByUser(user);
     }
 }

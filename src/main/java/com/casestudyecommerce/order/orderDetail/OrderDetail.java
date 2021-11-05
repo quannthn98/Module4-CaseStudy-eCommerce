@@ -40,4 +40,12 @@ public class OrderDetail {
         this.sellOff = sellOff;
         this.quantity = quantity;
     }
+
+    public OrderDetail(Product product, Orders orders, double price, double sellOff, int quantity) {
+        this.product = product;
+        this.orders = orders;
+        this.price = price;
+        this.sellOff = sellOff;
+        this.quantity = quantity;
+    }
 }
