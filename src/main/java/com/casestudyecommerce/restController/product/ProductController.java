@@ -36,7 +36,7 @@ public class ProductController {
     private IImageService ImageService;
 
     @GetMapping
-    public ResponseEntity<Page<Product>> findAll(@RequestParam(name = "q") Optional<String> q,@RequestParam(name = "category") Optional<String> category, Pageable pageable) {
+    public ResponseEntity<Page<Product>> findAll(@RequestParam(name = "q") Optional<String> q, @RequestParam(name = "category") Optional<String> category, Pageable pageable) {
         Page<Product> productPage;
         if (q.isPresent()) {
             productPage = productService.findAllByNameContaining(q.get(), pageable);
@@ -53,6 +53,15 @@ public class ProductController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(productOptional.get(), HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}/images")
+    public ResponseEntity<Iterable<Image>> findImageByProduct(@PathVariable Long id) {
+        Optional<Product> productOptional = productService.findById(id);
+        if (!productOptional.isPresent()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(ImageService.findAllByProduct(productOptional.get()), HttpStatus.OK);
     }
 
     @PostMapping
