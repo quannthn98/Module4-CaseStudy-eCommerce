@@ -10,7 +10,6 @@ import com.casestudyecommerce.product.Product;
 import com.casestudyecommerce.security.model.UserPrinciple;
 import com.casestudyecommerce.user.users.IUserService;
 import com.casestudyecommerce.user.users.User;
-import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -78,6 +77,7 @@ public class OrderRestController {
             OrderDetail orderDetail = new OrderDetail(product, orders, price, saleOff, quantity);
             orderDetailService.save(orderDetail);
             orderDetails.add(orderDetail);
+
         }
         return orderDetails;
     }
