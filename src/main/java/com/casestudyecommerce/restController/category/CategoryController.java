@@ -32,13 +32,22 @@ public class CategoryController {
         return new ResponseEntity<>(categoryPage, HttpStatus.OK);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Category> findById(@PathVariable Long id) {
+        Optional<Category> categoryOptional = categoryService.findById(id);
+        if (!categoryOptional.isPresent()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(categoryOptional.get(), HttpStatus.OK);
+    }
+
     @GetMapping("/{id}/products")
     public ResponseEntity<Page<Product>> findProductByCategory(@PathVariable Long id, Pageable pageable) {
         Optional<Category> categoryOptional = categoryService.findById(id);
         if (!categoryOptional.isPresent()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(productService.findAllByCategory(categoryOptional.get(),pageable), HttpStatus.OK);
+        return new ResponseEntity<>(productService.findAllByCategory(categoryOptional.get(), pageable), HttpStatus.OK);
     }
 
     @PostMapping
