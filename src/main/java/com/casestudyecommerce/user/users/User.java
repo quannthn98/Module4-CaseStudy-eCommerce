@@ -48,4 +48,11 @@ public class User {
         this.userStatus = userStatus;
     }
 
+    public User(String username, String password, List<Role> roles, UserProfile userProfile, UserStatus userStatus) {
+        this.username = username;
+        this.password = password;
+        this.roles = roles;
+        this.userProfile = userProfile;
+        this.userStatus = userStatus;
+    }
 }

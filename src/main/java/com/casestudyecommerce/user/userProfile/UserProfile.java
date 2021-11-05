@@ -17,16 +17,13 @@ public class UserProfile {
     @Column(nullable = false)
     private String fullName;
 
-    @NotEmpty
-    @Column(nullable = false, columnDefinition = "integer default 18")
+    @Column(columnDefinition = "integer default 18")
     private int age;
 
     @NotEmpty
     @Column(nullable = false)
     private String address;
 
-    @NotEmpty
-    @Column(nullable = false)
     private Date birthDay;
 
     @NotEmpty
@@ -38,6 +35,14 @@ public class UserProfile {
 
     public UserProfile(Long id, String fullName, int age, String address, Date birthDay, String phone) {
         this.id = id;
+        this.fullName = fullName;
+        this.age = age;
+        this.address = address;
+        this.birthDay = birthDay;
+        this.phone = phone;
+    }
+
+    public UserProfile(String fullName, int age, String address, Date birthDay, String phone) {
         this.fullName = fullName;
         this.age = age;
         this.address = address;

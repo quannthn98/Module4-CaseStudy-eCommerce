@@ -32,7 +32,7 @@ public class Product {
     @Column(nullable = false)
     private String mainImage;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany
     private List<Image> subImage;
 
     @ManyToOne
@@ -45,7 +45,6 @@ public class Product {
     private Category category;
 
     public Product() {
-
     }
 
     public Product(Long id, String name, int quantity, double price, double saleOff, String mainImage, List<Image> subImage, Brand brand, String description, Category category) {
