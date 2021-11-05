@@ -16,11 +16,16 @@ public class Image {
     @NotEmpty
     private String name;
 
+    @ManyToOne
+    private Product product;
+
     public Image() {
     }
 
-    public Image(Long id, String name) {
+    public Image(Long id, String name, Product product) {
         this.id = id;
         this.name = name;
+        this.product = product;
     }
+
 }
