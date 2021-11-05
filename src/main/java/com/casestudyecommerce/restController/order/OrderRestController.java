@@ -58,8 +58,9 @@ public class OrderRestController {
     public ResponseEntity<HashMap<Orders, List<OrderDetail>>> newOrder(@RequestBody Orders orders, Authentication authentication) {
         UserPrinciple userPrinciple = (UserPrinciple) authentication.getPrincipal();
         User user = userService.findByUsername(userPrinciple.getUsername());
+        orders.setUser(user);
         Orders savedOrder = orderService.save(orders);
-        Iterable<CartDetail> cartDetails = cartService.findByUser(user);
+        Iterable<CartDetail> cartDetails = cartService.findAllByUser(user);
         List<OrderDetail> orderDetails = convertCartDetailToOrderDetail(cartDetails, savedOrder);
         HashMap<Orders, List<OrderDetail>> ordersListHashMap = new HashMap<>();
         ordersListHashMap.put(orders, orderDetails);

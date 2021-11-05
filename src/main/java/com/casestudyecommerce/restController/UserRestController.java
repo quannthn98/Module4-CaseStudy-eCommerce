@@ -64,7 +64,7 @@ public class UserRestController {
         } else {
             UserPrinciple userPrinciple = (UserPrinciple) authentication.getPrincipal();
             User user = userService.findByUsername(userPrinciple.getUsername());
-            return new ResponseEntity<>(cartService.findByUser(user), HttpStatus.OK);
+            return new ResponseEntity<>(cartService.findAllByUser(user), HttpStatus.OK);
         }
     }
 
