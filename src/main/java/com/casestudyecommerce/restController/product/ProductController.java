@@ -1,7 +1,5 @@
 package com.casestudyecommerce.restController.product;
 
-import com.casestudyecommerce.brand.Brand;
-import com.casestudyecommerce.category.Category;
 import com.casestudyecommerce.image.IImageService;
 import com.casestudyecommerce.image.Image;
 import com.casestudyecommerce.product.IProductService;
@@ -25,6 +23,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@CrossOrigin("*")
 @RequestMapping("/products")
 public class ProductController {
     @Value("${file-upload}")
