@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@CrossOrigin("*")
 @RequestMapping("/orders")
 public class OrderController {
     @Autowired
@@ -60,6 +61,8 @@ public class OrderController {
         UserPrinciple userPrinciple = (UserPrinciple) authentication.getPrincipal();
         User user = userService.findByUsername(userPrinciple.getUsername());
         orders.setUser(user);
+        OrderStatus orderStatus = orderStatusService.findById(1L).get();
+        orders.setOrderStatus(orderStatus);
         Orders savedOrder = orderService.save(orders);
         Iterable<CartDetail> cartDetails = cartService.findAllByUser(user);
         List<OrderDetail> orderDetails = userService.convertCartDetailToOrderDetail(cartDetails, savedOrder);
@@ -69,14 +72,14 @@ public class OrderController {
     }
 
     @PutMapping("/{id}/{statusId}")
-    public ResponseEntity<Orders> updateOrderStatus(@PathVariable("id") Long id, @PathVariable("statusId") Long statusId){
+    public ResponseEntity<Orders> updateOrderStatus(@PathVariable("id") Long id, @PathVariable("statusId") Long statusId) {
         Optional<Orders> optionalOrders = orderService.findById(id);
-        if (!optionalOrders.isPresent()){
+        if (!optionalOrders.isPresent()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } else {
             OrderStatus orderStatus = orderStatusService.findById(statusId).get();
             Orders orders = optionalOrders.get();
-            if (orderStatus.getName().equals(orders.getOrderStatus().getName())){
+            if (orderStatus.getName().equals(orders.getOrderStatus().getName())) {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             } else {
                 orders.setOrderStatus(orderStatus);
@@ -86,13 +89,13 @@ public class OrderController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteOrderById(@PathVariable Long id, Authentication authentication){
+    public ResponseEntity<String> deleteOrderById(@PathVariable Long id, Authentication authentication) {
         Optional<Orders> optionalOrders = orderService.findById(id);
-        if (!optionalOrders.isPresent()){
+        if (!optionalOrders.isPresent()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } else {
             Orders orders = optionalOrders.get();
-            if (orders.getOrderStatus().getName().equals("pending")){
+            if (orders.getOrderStatus().getName().equals("pending")) {
                 orderService.deleteById(id);
                 return new ResponseEntity<>("Delete successfully", HttpStatus.OK);
             } else {
