@@ -2,6 +2,7 @@ package com.casestudyecommerce.restController.cart;
 
 import com.casestudyecommerce.cart.CartDetail;
 import com.casestudyecommerce.cart.ICartService;
+import com.casestudyecommerce.product.IProductService;
 import com.casestudyecommerce.product.Product;
 import com.casestudyecommerce.security.model.UserPrinciple;
 import com.casestudyecommerce.user.users.IUserService;
@@ -21,12 +22,16 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/carts")
+@CrossOrigin("*")
 public class CartController {
     @Autowired
     private ICartService cartService;
 
     @Autowired
     private IUserService userService;
+
+    @Autowired
+    private IProductService productService;
 
     @GetMapping
     public ResponseEntity<Page<CartDetail>> findAll(Pageable pageable) {
@@ -36,17 +41,20 @@ public class CartController {
     @PostMapping
     public ResponseEntity<CartDetail> addToCart(@RequestBody CartDetail cartDetail, Authentication authentication) {
         Product product = cartDetail.getProduct();
-        if (authentication == null || product.getQuantity() <= 0) {
+        if (authentication == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         } else {
-            UserPrinciple userPrinciple = (UserPrinciple) authentication.getPrincipal();
-            User user = userService.findByUsername(userPrinciple.getUsername());
+            Product targetProduct = productService.findById(cartDetail.getProduct().getId()).get();
+            if (targetProduct.getQuantity() <= 0){
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+            User user = userService.getUserFromJwt(authentication);
             cartDetail.setUser(user);
             return new ResponseEntity<>(cartService.save(cartDetail), HttpStatus.CREATED);
         }
     }
 
-    @PutMapping("/{action}/{id}")
+    @PutMapping("/{id}/{action}")
     public ResponseEntity<CartDetail> changeQuantity(@PathVariable("action") String action, @PathVariable("id") Long id, Authentication authentication) {
         Optional<CartDetail> optionalCartDetail = cartService.findById(id);
         if (!optionalCartDetail.isPresent()) {
@@ -60,8 +68,11 @@ public class CartController {
                 case "+":
                     if (cartDetail.getQuantity() <= 0){
                         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+                    } else if (product.getQuantity() == cartDetail.getQuantity()){
+                        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+                    } else {
+                        cartDetail.setQuantity(quantity + 1);
                     }
-                    cartDetail.setQuantity(quantity + 1);
                     break;
                 case "minus":
                 case "-":
@@ -75,7 +86,7 @@ public class CartController {
                     return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
 
-            return new ResponseEntity<>(cartService.save(cartDetail), HttpStatus.OK);
+            return new ResponseEntity<>(cartService.updateQuantity(cartDetail), HttpStatus.OK);
         }
     }
 
