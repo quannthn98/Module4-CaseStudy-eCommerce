@@ -2,6 +2,7 @@ package com.casestudyecommerce.order.orderDetail;
 
 import com.casestudyecommerce.order.orders.Orders;
 import com.casestudyecommerce.product.Product;
+import com.casestudyecommerce.user.users.User;
 import lombok.Data;
 
 import javax.persistence.*;

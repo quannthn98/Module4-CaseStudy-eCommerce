@@ -22,9 +22,6 @@ public class Orders {
     @ManyToOne
     private User user;
 
-    @ManyToOne
-    private User seller;
-
     private Date dateCreated;
 
     @ManyToOne
@@ -53,10 +50,9 @@ public class Orders {
     public Orders() {
     }
 
-    public Orders(Long id, User user, User seller, DeliverFirm deliverFirm, PaymentMethod paymentMethod, OrderStatus orderStatus, String fullName, String address, String phone, String email, String note) {
+    public Orders(Long id, User user, DeliverFirm deliverFirm, PaymentMethod paymentMethod, OrderStatus orderStatus, String fullName, String address, String phone, String email, String note) {
         this.id = id;
         this.user = user;
-        this.seller = seller;
         this.deliverFirm = deliverFirm;
         this.paymentMethod = paymentMethod;
         this.orderStatus = orderStatus;

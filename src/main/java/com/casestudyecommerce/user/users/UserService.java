@@ -1,5 +1,10 @@
 package com.casestudyecommerce.user.users;
 
+import com.casestudyecommerce.cart.CartDetail;
+import com.casestudyecommerce.order.orderDetail.IOrderDetailService;
+import com.casestudyecommerce.order.orderDetail.OrderDetail;
+import com.casestudyecommerce.order.orders.Orders;
+import com.casestudyecommerce.product.Product;
 import com.casestudyecommerce.role.Role;
 import com.casestudyecommerce.security.model.UserPrinciple;
 import com.casestudyecommerce.user.UserDto;
@@ -10,11 +15,13 @@ import com.casestudyecommerce.user.userStatus.UserStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -26,6 +33,9 @@ public class UserService implements IUserService{
 
     @Autowired
     private IUserStatusService userStatusService;
+
+    @Autowired
+    private IOrderDetailService orderDetailService;
 
     @Override
     public Page<User> findAll(Pageable pageable) {
@@ -89,6 +99,34 @@ public class UserService implements IUserService{
             return false;
         } else {
             return true;
+        }
+    }
+
+    @Override
+    public List<OrderDetail> convertCartDetailToOrderDetail(Iterable<CartDetail> cartDetails, Orders orders) {
+        List<OrderDetail> orderDetails = new ArrayList<>();
+        for (CartDetail cartDetail : cartDetails) {
+
+            Product product = cartDetail.getProduct();
+            int quantity = cartDetail.getQuantity();
+            double price = product.getPrice();
+            double saleOff = product.getSaleOff();
+            OrderDetail orderDetail = new OrderDetail(product, orders, price, saleOff, quantity);
+            orderDetailService.save(orderDetail);
+            orderDetails.add(orderDetail);
+
+        }
+        return orderDetails;
+    }
+
+    @Override
+    public User getUserFromJwt(Authentication authentication) {
+        if (authentication == null){
+            return null;
+        } else {
+            UserPrinciple userPrinciple = (UserPrinciple) authentication.getPrincipal();
+            User user = findByUsername(userPrinciple.getUsername());
+            return user;
         }
     }
 }

@@ -17,6 +17,9 @@ public class CartDetail {
     private User user;
 
     @ManyToOne
+    private User seller;
+
+    @ManyToOne
     private Product product;
 
     @Column(nullable = false)
@@ -25,9 +28,10 @@ public class CartDetail {
     public CartDetail() {
     }
 
-    public CartDetail(Long id, User user, Product product, int quantity) {
+    public CartDetail(Long id, User user, User seller, Product product, int quantity) {
         this.id = id;
         this.user = user;
+        this.seller = seller;
         this.product = product;
         this.quantity = quantity;
     }

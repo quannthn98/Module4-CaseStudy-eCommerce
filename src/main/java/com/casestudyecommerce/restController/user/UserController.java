@@ -1,8 +1,10 @@
-package com.casestudyecommerce.restController;
+package com.casestudyecommerce.restController.user;
 
 import com.casestudyecommerce.cart.CartDetail;
 import com.casestudyecommerce.cart.ICartService;
 import com.casestudyecommerce.execptionHandler.Exception.DuplicateException;
+import com.casestudyecommerce.order.orders.IOrderService;
+import com.casestudyecommerce.order.orders.Orders;
 import com.casestudyecommerce.role.Role;
 import com.casestudyecommerce.security.model.UserPrinciple;
 import com.casestudyecommerce.user.UserDto;
@@ -10,6 +12,7 @@ import com.casestudyecommerce.user.userProfile.IUserProfileService;
 import com.casestudyecommerce.user.userProfile.UserProfile;
 import com.casestudyecommerce.user.users.IUserService;
 import com.casestudyecommerce.user.users.User;
+import org.hibernate.criterion.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,7 +31,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/user")
 @CrossOrigin("*")
-public class UserRestController {
+public class UserController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -40,6 +43,9 @@ public class UserRestController {
 
     @Autowired
     private ICartService cartService;
+
+    @Autowired
+    private IOrderService orderService;
 
     @GetMapping
     public ResponseEntity<Page<User>> findAll(Pageable pageable) {
@@ -58,13 +64,24 @@ public class UserRestController {
     }
 
     @GetMapping("/cart")
-    public ResponseEntity<Iterable<CartDetail>> findCartByUser(Authentication authentication){
-        if (authentication == null){
+    public ResponseEntity<Iterable<CartDetail>> findCartByUser(Authentication authentication) {
+        if (authentication == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         } else {
             UserPrinciple userPrinciple = (UserPrinciple) authentication.getPrincipal();
             User user = userService.findByUsername(userPrinciple.getUsername());
             return new ResponseEntity<>(cartService.findAllByUser(user), HttpStatus.OK);
+        }
+    }
+
+    @GetMapping("/order")
+    public ResponseEntity<Page<Orders>> findOrderByUser( Pageable pageable, Authentication authentication) {
+        if (authentication == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } else {
+            User user = userService.getUserFromJwt(authentication);
+            Page<Orders> orders = orderService.findByUser(pageable, user);
+            return new ResponseEntity<>(orders, HttpStatus.OK);
         }
     }
 
@@ -81,22 +98,22 @@ public class UserRestController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserProfile> changeProfileDetail(@RequestBody UserProfile userProfile, @PathVariable("id") Long id) {
+    public ResponseEntity<UserProfile> updateProfile(@RequestBody UserProfile userProfile, @PathVariable("id") Long id) {
         Optional<User> userOptional = userService.findById(id);
-        if (!userOptional.isPresent()){
+        if (!userOptional.isPresent()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } else {
             User user = userOptional.get();
             userProfile.setId(user.getUserProfile().getId());
             return new ResponseEntity<>(userProfileService.save(userProfile), HttpStatus.OK);
         }
-
     }
 
+    @Secured("ROLE_ADMIN")
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteById(@PathVariable Long id) {
         Optional<User> optionalUser = userService.findById(id);
-        if (!optionalUser.isPresent()){
+        if (!optionalUser.isPresent()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } else {
             userProfileService.deleteById(optionalUser.get().getUserProfile().getId());
@@ -104,6 +121,4 @@ public class UserRestController {
             return new ResponseEntity<>("Delete successfully", HttpStatus.OK);
         }
     }
-
-
 }

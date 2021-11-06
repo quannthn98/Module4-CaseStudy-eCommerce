@@ -4,6 +4,8 @@ import com.casestudyecommerce.cart.CartDetail;
 import com.casestudyecommerce.cart.ICartService;
 import com.casestudyecommerce.order.orderDetail.IOrderDetailService;
 import com.casestudyecommerce.order.orderDetail.OrderDetail;
+import com.casestudyecommerce.order.orderStatus.IOrderStatusService;
+import com.casestudyecommerce.order.orderStatus.OrderStatus;
 import com.casestudyecommerce.order.orders.IOrderService;
 import com.casestudyecommerce.order.orders.Orders;
 import com.casestudyecommerce.product.Product;
@@ -25,7 +27,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/order")
-public class OrderRestController {
+public class OrderController {
     @Autowired
     private IOrderService orderService;
 
@@ -36,7 +38,7 @@ public class OrderRestController {
     private IUserService userService;
 
     @Autowired
-    private IOrderDetailService orderDetailService;
+    private IOrderStatusService orderStatusService;
 
     @GetMapping
     public ResponseEntity<Page<Orders>> findAll(@RequestParam(name = "q") Optional<String> q, Pageable pageable) {
@@ -60,26 +62,42 @@ public class OrderRestController {
         orders.setUser(user);
         Orders savedOrder = orderService.save(orders);
         Iterable<CartDetail> cartDetails = cartService.findAllByUser(user);
-        List<OrderDetail> orderDetails = convertCartDetailToOrderDetail(cartDetails, savedOrder);
+        List<OrderDetail> orderDetails = userService.convertCartDetailToOrderDetail(cartDetails, savedOrder);
         HashMap<Orders, List<OrderDetail>> ordersListHashMap = new HashMap<>();
         ordersListHashMap.put(orders, orderDetails);
         return new ResponseEntity<>(ordersListHashMap, HttpStatus.OK);
     }
 
-    private List<OrderDetail> convertCartDetailToOrderDetail(Iterable<CartDetail> cartDetails, Orders orders) {
-        List<OrderDetail> orderDetails = new ArrayList<>();
-        for (CartDetail cartDetail : cartDetails) {
-
-            Product product = cartDetail.getProduct();
-            int quantity = cartDetail.getQuantity();
-            double price = product.getPrice();
-            double saleOff = product.getSaleOff();
-            OrderDetail orderDetail = new OrderDetail(product, orders, price, saleOff, quantity);
-            orderDetailService.save(orderDetail);
-            orderDetails.add(orderDetail);
-
+    @PutMapping("/{id}/{statusId}")
+    public ResponseEntity<Orders> updateOrderStatus(@PathVariable("id") Long id, @PathVariable("statusId") Long statusId){
+        Optional<Orders> optionalOrders = orderService.findById(id);
+        if (!optionalOrders.isPresent()){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+            OrderStatus orderStatus = orderStatusService.findById(statusId).get();
+            Orders orders = optionalOrders.get();
+            if (orderStatus.getName().equals(orders.getOrderStatus().getName())){
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            } else {
+                orders.setOrderStatus(orderStatus);
+                return new ResponseEntity<>(orderService.save(orders), HttpStatus.OK);
+            }
         }
-        return orderDetails;
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteOrderById(@PathVariable Long id, Authentication authentication){
+        Optional<Orders> optionalOrders = orderService.findById(id);
+        if (!optionalOrders.isPresent()){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+            Orders orders = optionalOrders.get();
+            if (orders.getOrderStatus().getName().equals("pending")){
+                orderService.deleteById(id);
+                return new ResponseEntity<>("Delete successfully", HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("Can not delete processed order", HttpStatus.BAD_REQUEST);
+            }
+        }
+    }
 }

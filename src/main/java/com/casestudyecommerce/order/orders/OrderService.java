@@ -1,5 +1,6 @@
 package com.casestudyecommerce.order.orders;
 
+import com.casestudyecommerce.user.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -34,5 +35,10 @@ public class OrderService implements IOrderService{
     @Override
     public Page<Orders> findByFullNameContaining(Pageable pageable, String fullName) {
         return orderRepository.findByFullNameContaining(pageable, fullName);
+    }
+
+    @Override
+    public Page<Orders> findByUser(Pageable pageable, User user) {
+        return orderRepository.findByUser(pageable, user);
     }
 }

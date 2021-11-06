@@ -1,4 +1,4 @@
-package com.casestudyecommerce.restController;
+package com.casestudyecommerce.restController.user;
 
 import com.casestudyecommerce.execptionHandler.Exception.DuplicateException;
 import com.casestudyecommerce.security.JwtService;
