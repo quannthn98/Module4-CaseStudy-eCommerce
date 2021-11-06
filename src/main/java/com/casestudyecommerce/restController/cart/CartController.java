@@ -20,7 +20,7 @@ import java.util.Optional;
 
 
 @RestController
-@RequestMapping("/cart")
+@RequestMapping("/carts")
 public class CartController {
     @Autowired
     private ICartService cartService;

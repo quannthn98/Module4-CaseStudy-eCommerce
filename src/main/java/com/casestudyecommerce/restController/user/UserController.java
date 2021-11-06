@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/users")
 @CrossOrigin("*")
 public class UserController {
     @Autowired

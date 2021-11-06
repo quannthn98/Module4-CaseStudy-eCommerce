@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/order")
+@RequestMapping("/orders")
 public class OrderController {
     @Autowired
     private IOrderService orderService;
