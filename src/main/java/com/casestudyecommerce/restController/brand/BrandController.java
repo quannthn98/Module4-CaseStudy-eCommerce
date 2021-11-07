@@ -2,6 +2,8 @@ package com.casestudyecommerce.restController.brand;
 
 import com.casestudyecommerce.brand.Brand;
 import com.casestudyecommerce.brand.IBrandService;
+import com.casestudyecommerce.product.IProductService;
+import com.casestudyecommerce.product.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,6 +19,9 @@ import java.util.Optional;
 public class BrandController {
     @Autowired
     private IBrandService brandService;
+
+    @Autowired
+    private IProductService productService;
 
     @GetMapping
     public ResponseEntity<Page<Brand>> findAll(Pageable pageable) {
@@ -59,5 +64,14 @@ public class BrandController {
         }
         brandService.deleteById(id);
         return new ResponseEntity<>(brandOptional.get(), HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}/brands")
+    public ResponseEntity<Page<Product>> findProductByBrand(@PathVariable Long id, Pageable pageable) {
+        Optional<Brand> brandOptional = brandService.findById(id);
+        if (!brandOptional.isPresent()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(productService.findAllByBrand(brandOptional.get(), pageable), HttpStatus.OK);
     }
 }
