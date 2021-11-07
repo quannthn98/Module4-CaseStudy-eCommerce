@@ -20,10 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 @CrossOrigin("*")
@@ -63,6 +60,7 @@ public class OrderController {
         orders.setUser(user);
         OrderStatus orderStatus = orderStatusService.findById(1L).get();
         orders.setOrderStatus(orderStatus);
+        orders.setDateCreated(orders.getDateCreated());
         Orders savedOrder = orderService.save(orders);
         Iterable<CartDetail> cartDetails = cartService.findAllByUser(user);
         List<OrderDetail> orderDetails = userService.convertCartDetailToOrderDetail(cartDetails, savedOrder);
@@ -103,4 +101,5 @@ public class OrderController {
             }
         }
     }
+
 }

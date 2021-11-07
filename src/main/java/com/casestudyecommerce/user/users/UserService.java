@@ -7,7 +7,6 @@ import com.casestudyecommerce.order.orders.Orders;
 import com.casestudyecommerce.product.Product;
 import com.casestudyecommerce.role.Role;
 import com.casestudyecommerce.security.model.UserPrinciple;
-import com.casestudyecommerce.user.UserDto;
 import com.casestudyecommerce.user.userProfile.IUserProfileService;
 import com.casestudyecommerce.user.userProfile.UserProfile;
 import com.casestudyecommerce.user.userStatus.IUserStatusService;
@@ -22,7 +21,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -66,7 +64,7 @@ public class UserService implements IUserService{
         String fullName = userDto.getFullName();
         int age = userDto.getAge();
         String address = userDto.getAddress();
-        Date birthDay = userDto.getBirthDay();
+        String birthDay = userDto.getBirthDay();
         String phone = userDto.getPhone();
         UserStatus userStatus = userStatusService.findById(1L).get();
         UserProfile userProfile = new UserProfile(fullName, age, address, birthDay, phone);

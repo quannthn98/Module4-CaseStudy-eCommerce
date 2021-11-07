@@ -22,7 +22,7 @@ public class Orders {
     @ManyToOne
     private User user;
 
-    private Date dateCreated;
+    private String dateCreated;
 
     @ManyToOne
     private DeliverFirm deliverFirm;

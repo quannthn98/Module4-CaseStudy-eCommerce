@@ -3,7 +3,7 @@ package com.casestudyecommerce.restController.user;
 import com.casestudyecommerce.execptionHandler.Exception.DuplicateException;
 import com.casestudyecommerce.security.JwtService;
 import com.casestudyecommerce.security.model.JwtResponse;
-import com.casestudyecommerce.user.UserDto;
+import com.casestudyecommerce.user.users.UserDto;
 import com.casestudyecommerce.user.users.IUserService;
 import com.casestudyecommerce.user.users.User;
 import org.springframework.beans.factory.annotation.Autowired;

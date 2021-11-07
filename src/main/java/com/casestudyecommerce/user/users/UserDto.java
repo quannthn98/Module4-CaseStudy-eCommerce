@@ -1,4 +1,4 @@
-package com.casestudyecommerce.user;
+package com.casestudyecommerce.user.users;
 
 import com.casestudyecommerce.role.Role;
 import lombok.Data;
@@ -12,6 +12,7 @@ import java.util.List;
 public class UserDto {
     private Long id;
 
+    @Size(min = 6, max = 18)
     private String username;
 
     @Size(min = 6, max = 12)
@@ -19,13 +20,16 @@ public class UserDto {
 
     private List<Role> roles;
 
+    @Size(max = 50, min = 4)
     private String fullName;
 
     private int age;
 
+    @Size(max = 255)
     private String address;
 
-    private Date birthDay;
+    private String birthDay;
 
+    @Size(min = 10, max = 11)
     private String phone;
 }

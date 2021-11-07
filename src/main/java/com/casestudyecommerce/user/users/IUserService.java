@@ -6,7 +6,6 @@ import com.casestudyecommerce.IGeneralService;
 import com.casestudyecommerce.cart.CartDetail;
 import com.casestudyecommerce.order.orderDetail.OrderDetail;
 import com.casestudyecommerce.order.orders.Orders;
-import com.casestudyecommerce.user.UserDto;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetailsService;
 

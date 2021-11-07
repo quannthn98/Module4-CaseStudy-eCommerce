@@ -23,7 +23,6 @@ public class User {
     private String username;
 
     @NotEmpty
-    @Size(min = 6, max = 12)
     @Column(nullable = false, columnDefinition = "text")
     private String password;
 
