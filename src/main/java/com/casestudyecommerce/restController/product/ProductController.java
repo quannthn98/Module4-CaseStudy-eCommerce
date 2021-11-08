@@ -67,21 +67,21 @@ public class ProductController {
     @PostMapping
     public ResponseEntity<Product> create(ProductForm productForm) throws IOException {
         String fileNameMainImage = getNameMainImage(productForm);
-        List<Image> imageList = getNameSubImage(productForm);
         Product product = new Product(
                 productForm.getName(),
                 productForm.getQuantity(),
                 productForm.getPrice(),
                 productForm.getSaleOff(),
                 fileNameMainImage,
-                imageList,
                 productForm.getBrand(),
                 productForm.getDescription(),
                 productForm.getCategory());
+        Product savedProduct = productService.save(product);
+        saveSubImage(productForm, savedProduct);
         return new ResponseEntity<>(productService.save(product), HttpStatus.CREATED);
     }
 
-    private List<Image> getNameSubImage(ProductForm productForm) throws IOException {
+    private List<Image> saveSubImage(ProductForm productForm, Product savedProduct) throws IOException {
         List<MultipartFile> multipartFileSubImage = productForm.getSubImage();
         List<Image> imageList = new ArrayList<>();
         for (MultipartFile multipartFile : multipartFileSubImage) {
@@ -89,6 +89,7 @@ public class ProductController {
             String fileNameSubImage = multipartFile.getOriginalFilename();
             FileCopyUtils.copy(multipartFile.getBytes(), new File(fileUpload + new Date().getTime() + fileNameSubImage));
             image.setName(fileNameSubImage);
+            image.setProduct(savedProduct);
             ImageService.save(image);
             imageList.add(image);
         }
@@ -102,7 +103,7 @@ public class ProductController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         String fileNameMainImage = getNameMainImage(productForm);
-        List<Image> imageList = getNameSubImage(productForm);
+        saveSubImage(productForm, productOptional.get());
         Product product = new Product(
                 id,
                 productForm.getName(),
@@ -110,7 +111,6 @@ public class ProductController {
                 productForm.getPrice(),
                 productForm.getSaleOff(),
                 fileNameMainImage,
-                imageList,
                 productForm.getBrand(),
                 productForm.getDescription(),
                 productForm.getCategory());
