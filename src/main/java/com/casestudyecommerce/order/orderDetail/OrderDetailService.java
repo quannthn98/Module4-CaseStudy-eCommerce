@@ -1,5 +1,6 @@
 package com.casestudyecommerce.order.orderDetail;
 
+import com.casestudyecommerce.order.orders.Orders;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -31,5 +32,10 @@ public class OrderDetailService implements IOrderDetailService{
     @Override
     public void deleteById(Long id) {
         orderDetailRepository.deleteById(id);
+    }
+
+    @Override
+    public Iterable<OrderDetail> findAllByOrders(Orders orders) {
+        return orderDetailRepository.findAllByOrders(orders);
     }
 }

@@ -2,6 +2,8 @@ package com.casestudyecommerce.restController.user;
 
 import com.casestudyecommerce.cart.CartDetail;
 import com.casestudyecommerce.cart.ICartService;
+import com.casestudyecommerce.order.orderDetail.IOrderDetailService;
+import com.casestudyecommerce.order.orderDetail.OrderDetail;
 import com.casestudyecommerce.order.orders.IOrderService;
 import com.casestudyecommerce.order.orders.Orders;
 import com.casestudyecommerce.security.model.UserPrinciple;
@@ -16,9 +18,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.Optional;
 
 @RestController
@@ -39,6 +43,9 @@ public class UserController {
 
     @Autowired
     private IOrderService orderService;
+
+    @Autowired
+    private IOrderDetailService orderDetailService;
 
     @GetMapping
     public ResponseEntity<Page<User>> findAll(Pageable pageable) {
@@ -68,14 +75,24 @@ public class UserController {
     }
 
     @GetMapping("/order")
-    public ResponseEntity<Page<Orders>> findOrderByUser( Pageable pageable, Authentication authentication) {
+    public ResponseEntity<Page<Orders>> findOrderByUser(Pageable pageable, Authentication authentication) {
         if (authentication == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         } else {
             User user = userService.getUserFromJwt(authentication);
-            Page<Orders> orders = orderService.findByUser(pageable, user);
-            return new ResponseEntity<>(orders, HttpStatus.OK);
+            return new ResponseEntity<>(orderService.findByUser(pageable, user), HttpStatus.OK);
         }
+    }
+
+    @GetMapping("/order/{id}")
+    public ResponseEntity<Iterable<OrderDetail>> findOrderDetailByOrder(@PathVariable("id") Long id){
+        Optional<Orders> optionalOrders = orderService.findById(id);
+        if (!optionalOrders.isPresent()){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        Orders order = optionalOrders.get();
+        Iterable<OrderDetail> orderDetails = orderDetailService.findAllByOrders(order);
+        return new ResponseEntity<>(orderDetails, HttpStatus.OK);
     }
 
     @PutMapping("/password/{id}")

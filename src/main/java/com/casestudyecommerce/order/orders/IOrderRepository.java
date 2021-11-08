@@ -11,4 +11,6 @@ public interface IOrderRepository extends JpaRepository<Orders, Long > {
     Page<Orders> findByFullNameContaining(Pageable pageable, String fullName);
 
     Page<Orders> findByUser(Pageable pageable, User user);
+
+    Iterable<Orders> findByUser(User user);
 }

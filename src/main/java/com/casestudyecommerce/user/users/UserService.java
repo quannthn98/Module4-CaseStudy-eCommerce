@@ -1,6 +1,7 @@
 package com.casestudyecommerce.user.users;
 
 import com.casestudyecommerce.cart.CartDetail;
+import com.casestudyecommerce.cart.ICartService;
 import com.casestudyecommerce.order.orderDetail.IOrderDetailService;
 import com.casestudyecommerce.order.orderDetail.OrderDetail;
 import com.casestudyecommerce.order.orders.Orders;
@@ -42,6 +43,9 @@ public class UserService implements IUserService{
 
     @Autowired
     private IUserProfileService userProfileService;
+
+    @Autowired
+    private ICartService cartService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -111,6 +115,7 @@ public class UserService implements IUserService{
             double saleOff = product.getSaleOff();
             OrderDetail orderDetail = new OrderDetail(product, orders, price, saleOff, quantity);
             orderDetailService.save(orderDetail);
+            cartService.deleteById(cartDetail.getId());
             orderDetails.add(orderDetail);
 
         }
