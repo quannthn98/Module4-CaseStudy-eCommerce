@@ -2,6 +2,7 @@ package com.casestudyecommerce.restController.brand;
 
 import com.casestudyecommerce.brand.Brand;
 import com.casestudyecommerce.brand.IBrandService;
+import com.casestudyecommerce.category.Category;
 import com.casestudyecommerce.product.IProductService;
 import com.casestudyecommerce.product.Product;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,7 +67,7 @@ public class BrandController {
         return new ResponseEntity<>(brandOptional.get(), HttpStatus.OK);
     }
 
-    @GetMapping("/{id}/brands")
+    @GetMapping("/{id}/products")
     public ResponseEntity<Page<Product>> findProductByBrand(@PathVariable Long id, Pageable pageable) {
         Optional<Brand> brandOptional = brandService.findById(id);
         if (!brandOptional.isPresent()) {

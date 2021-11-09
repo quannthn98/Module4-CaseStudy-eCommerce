@@ -7,6 +7,7 @@ import com.casestudyecommerce.product.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -42,7 +43,7 @@ public class CategoryController {
     }
 
     @GetMapping("/{id}/products")
-    public ResponseEntity<Page<Product>> findProductByCategory(@PathVariable Long id, Pageable pageable) {
+    public ResponseEntity<Page<Product>> findProductByCategory(@PathVariable Long id, @PageableDefault(size = 5) Pageable pageable) {
         Optional<Category> categoryOptional = categoryService.findById(id);
         if (!categoryOptional.isPresent()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -61,8 +62,8 @@ public class CategoryController {
         if (!categoryOptional.isPresent()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        categoryService.save(category);
-        return new ResponseEntity<>(categoryOptional.get(), HttpStatus.OK);
+        category.setId(id);
+        return new ResponseEntity<>(categoryService.save(category), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")

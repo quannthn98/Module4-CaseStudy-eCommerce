@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.FileCopyUtils;
@@ -36,7 +37,7 @@ public class ProductController {
     private IImageService ImageService;
 
     @GetMapping
-    public ResponseEntity<Page<Product>> findAll(@RequestParam(name = "q") Optional<String> q, @RequestParam(name = "category") Optional<String> category, Pageable pageable) {
+    public ResponseEntity<Page<Product>> findAll(@RequestParam(name = "q") Optional<String> q, @RequestParam(name = "category") Optional<String> category,@PageableDefault(size = 5) Pageable pageable) {
         Page<Product> productPage;
         if (q.isPresent()) {
             productPage = productService.findAllByNameContaining(q.get(), pageable);
