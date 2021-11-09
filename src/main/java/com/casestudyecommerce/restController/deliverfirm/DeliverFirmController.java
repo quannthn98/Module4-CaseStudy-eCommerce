@@ -24,7 +24,7 @@ public class DeliverFirmController {
 
     @GetMapping
     public ResponseEntity<Page<DeliverFirm>> findAll(@RequestParam(name = "q") Optional<String> q,
-                                        @PageableDefault(sort = "name",size = 2) Pageable pageable){
+                                        @PageableDefault(sort = "name",size = 5) Pageable pageable){
         Page<DeliverFirm> deliverFirmPage;
         if(!q.isPresent()){
             deliverFirmPage=deliverFirmService.findAll(pageable);

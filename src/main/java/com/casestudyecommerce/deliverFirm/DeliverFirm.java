@@ -12,7 +12,7 @@ public class DeliverFirm {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotEmpty
+    @NotEmpty(message = "Name Not Null")
     @Column(columnDefinition = "VARCHAR(50)",unique = true, nullable = false)
     private String name;
 

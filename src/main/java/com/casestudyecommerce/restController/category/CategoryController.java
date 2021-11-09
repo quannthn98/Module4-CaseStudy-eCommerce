@@ -2,11 +2,13 @@ package com.casestudyecommerce.restController.category;
 
 import com.casestudyecommerce.category.Category;
 import com.casestudyecommerce.category.ICategoryService;
+import com.casestudyecommerce.deliverFirm.DeliverFirm;
 import com.casestudyecommerce.product.IProductService;
 import com.casestudyecommerce.product.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,12 +26,23 @@ public class CategoryController {
     private IProductService productService;
 
     @GetMapping
-    public ResponseEntity<Page<Category>> findAll(Pageable pageable) {
-        Page<Category> categoryPage = categoryService.findAll(pageable);
-        if (categoryPage.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    public ResponseEntity<Page<Category>> findAll(@RequestParam(name = "q")Optional<String> q,
+                                                  @PageableDefault(sort = "name",size = 5) Pageable pageable) {
+
+        Page<Category> categoryPage;
+
+        if(!q.isPresent()){
+            categoryPage=categoryService.findAll(pageable);
+        }else {
+            categoryPage=categoryService.findAllByNameContaining(q.get(),pageable);
         }
-        return new ResponseEntity<>(categoryPage, HttpStatus.OK);
+        return new ResponseEntity<>(categoryPage,HttpStatus.OK);
+
+//        Page<Category> categoryPage = categoryService.findAll(pageable);
+//        if (categoryPage.isEmpty()) {
+//            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+//        }
+//        return new ResponseEntity<>(categoryPage, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
@@ -61,6 +74,7 @@ public class CategoryController {
         if (!categoryOptional.isPresent()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+        category.setId(id);
         categoryService.save(category);
         return new ResponseEntity<>(categoryOptional.get(), HttpStatus.OK);
     }

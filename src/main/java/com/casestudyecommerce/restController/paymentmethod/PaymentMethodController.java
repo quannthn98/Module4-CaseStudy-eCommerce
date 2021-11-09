@@ -24,7 +24,7 @@ public class PaymentMethodController {
 
     @GetMapping
     public ResponseEntity<Page<PaymentMethod>> findAll(@RequestParam("q")Optional<String> q,
-                                                       @PageableDefault(sort = "name",size = 2) Pageable pageable){
+                                                       @PageableDefault(sort = "name",size = 5) Pageable pageable){
         Page<PaymentMethod> paymentMethodPage;
         if(q.isPresent()){
             paymentMethodPage= paymentMethodService.findAllByNameContaining(q.get(),pageable);
