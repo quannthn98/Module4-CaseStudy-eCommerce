@@ -116,6 +116,7 @@ public class UserService implements IUserService{
             OrderDetail orderDetail = new OrderDetail(product, orders, price, saleOff, quantity);
             orderDetailService.save(orderDetail);
             cartService.deleteById(cartDetail.getId());
+            product.setQuantity(product.getQuantity() - cartDetail.getQuantity());
             orderDetails.add(orderDetail);
 
         }

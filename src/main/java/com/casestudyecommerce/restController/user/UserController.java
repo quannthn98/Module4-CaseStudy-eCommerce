@@ -84,6 +84,7 @@ public class UserController {
         }
     }
 
+
     @GetMapping("/order/{id}")
     public ResponseEntity<Iterable<OrderDetail>> findOrderDetailByOrder(@PathVariable("id") Long id){
         Optional<Orders> optionalOrders = orderService.findById(id);
@@ -95,17 +96,28 @@ public class UserController {
         return new ResponseEntity<>(orderDetails, HttpStatus.OK);
     }
 
-    @PutMapping("/password/{id}")
-    public ResponseEntity<User> changePassword(@RequestBody User user, @PathVariable Long id) {
-        Optional<User> optionalUser = userService.findById(id);
-        if (!optionalUser.isPresent()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    @PutMapping("/password")
+    public ResponseEntity<User> changePassword(@RequestBody User user, Authentication authentication) {
+        if (authentication == null){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         } else {
-            User targetUser = optionalUser.get();
+            User targetUser = userService.getUserFromJwt(authentication);
             targetUser.setPassword(passwordEncoder.encode(user.getPassword()));
             return new ResponseEntity<>(targetUser, HttpStatus.OK);
         }
     }
+
+    @PostMapping("/password/check")
+    public ResponseEntity<User> checkPassword(@RequestBody String password, Authentication authentication){
+        User user = userService.getUserFromJwt(authentication);
+        if (passwordEncoder.matches(password, user.getPassword())) {
+            return new ResponseEntity<>(user, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(user, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+
 
     @PutMapping("/{id}")
     public ResponseEntity<UserProfile> updateProfile(@RequestBody UserProfile userProfile, @PathVariable("id") Long id) {
@@ -119,7 +131,6 @@ public class UserController {
         }
     }
 
-    @Secured("ROLE_ADMIN")
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteById(@PathVariable Long id) {
         Optional<User> optionalUser = userService.findById(id);
